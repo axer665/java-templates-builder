@@ -3,7 +3,7 @@ import java.util.OptionalInt;
 public class Person {
     protected final String name;
     protected final String surname;
-    protected OptionalInt age;
+    protected int age;
     protected String address;
 
     public Person(String name, String surname) {
@@ -14,14 +14,12 @@ public class Person {
     public Person(String name, String surname, int age) {
         this.name = name;
         this.surname = surname;
-        this.age = OptionalInt.of(age);
+        this.age = age;
     }
 
     public boolean hasAge() {
-        if (this.age != null) {
-            return true;
-        }
-        return false;
+        OptionalInt opAge = OptionalInt.of(this.age);
+        return opAge.isPresent();
     }
 
     public boolean hasAddress() {
@@ -40,7 +38,7 @@ public class Person {
     }
 
     public OptionalInt getAge() {
-        return this.age;
+        return hasAge() ? OptionalInt.of(this.age) : OptionalInt.empty();
     }
 
     public String getAddress() {
@@ -51,7 +49,10 @@ public class Person {
         this.address = address;
     }
 
-    public void happyBirthday() { /*...*/ }
+    public void happyBirthday() {
+        if (hasAge())
+            this.age++;
+    }
 
     public PersonBuilder newChildBuilder() {
         PersonBuilder childBuilder = new PersonBuilder();
@@ -64,17 +65,17 @@ public class Person {
 
     @Override
     public String toString() {
-        String address = this.address != null ? this.address : "не указан";
-        String age = this.age.getAsInt() > 0 ? Integer.toString(this.age.getAsInt()) : "не указан";
-        return "Person: \n { " +
+        String address = this.hasAddress() ? this.address : "не указан";
+        String age = this.hasAge() ? Integer.toString(getAge().getAsInt()) : "не указан";
+        return "Person: \n{\n" +
                 "Имя: " + this.name + "\n" +
                 "Фамилия: " + this.surname + "\n" +
                 "Возраст: " + age + "\n" +
-                "Город: " + address + " }\n";
+                "Город: " + address + "\n}\n";
     }
 
     @Override
     public int hashCode() {
-        return (this.name + "_" + this.surname + "_" + this.age.getAsInt() + "_" + this.address).hashCode();
+        return (this.name + "_" + this.surname + "_" + (hasAge() ? getAge() : 0) + "_" + this.address).hashCode();
     }
 }

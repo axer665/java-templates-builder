@@ -2,10 +2,10 @@ import java.util.OptionalInt;
 
 public class PersonBuilder {
 
-    public String name;
-    public String surname;
-    public int age;
-    public String address;
+    protected String name;
+    protected String surname;
+    protected int age;
+    protected String address;
 
     public PersonBuilder setName(String name) {
         this.name = name;
