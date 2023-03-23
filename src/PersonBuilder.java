@@ -4,7 +4,7 @@ public class PersonBuilder {
 
     protected String name;
     protected String surname;
-    protected int age;
+    protected OptionalInt age = OptionalInt.empty();
     protected String address;
 
     public PersonBuilder setName(String name) {
@@ -22,7 +22,7 @@ public class PersonBuilder {
         if (age > 110 || age < 0) {
             throw new IllegalArgumentException("Неверно указан возраст");
         }
-        this.age = age;
+        this.age = OptionalInt.of(age);
         return this;
     }
 
@@ -36,7 +36,7 @@ public class PersonBuilder {
         if (name == null || surname == null) {
             throw new IllegalArgumentException("Имя и фамилия - обязательные параметры");
         }
-        Person person = new Person(name, surname, age);
+        Person person = age.isPresent() ? new Person(name, surname, age.getAsInt()) : new Person(name, surname);
         person.setAddress(address);
         return person;
     }
